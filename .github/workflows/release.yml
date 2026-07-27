@@ -121,13 +121,41 @@ jobs:
           files: release/*
           generate_release_notes: true
           body: |
-            Single-file executables. No runtime to install.
+            Single-file executables. No Python, no runtime, nothing to install alongside them.
 
-            Verify what you downloaded before running it:
+            | Platform | File |
+            |---|---|
+            | Linux (x64) | `eos-linux-x64` |
+            | macOS (Apple silicon) | `eos-macos-arm64` |
+            | Windows (x64) | `eos-windows-x64.exe` |
+
+            **1. Verify what you downloaded**, before running a binary from the internet:
 
             ```sh
             shasum -a 256 -c SHA256SUMS --ignore-missing
             ```
 
-            Then put it on your `PATH` and run `eos connect` in a repository. See the
-            [getting started guide](https://github.com/MotivatedNaveen/eos-cli/blob/main/docs/getting-started.md).
+            **2. Put it on your `PATH`:**
+
+            ```sh
+            chmod +x eos-linux-x64
+            sudo mv eos-linux-x64 /usr/local/bin/eos
+            eos --help
+            ```
+
+            On Windows, rename `eos-windows-x64.exe` to `eos.exe` and move it to a directory on
+            your `PATH`.
+
+            **3. Connect a repository.** Create a project in EOS, download its connection file,
+            then — from inside the repository you want to connect:
+
+            ```sh
+            cd /path/to/your/repository
+            eos connect
+            ```
+
+            It publishes on every commit after that. Nothing else to run.
+
+            [Getting started](https://github.com/MotivatedNaveen/eos-cli/blob/main/docs/getting-started.md)
+            · [What gets published](https://github.com/MotivatedNaveen/eos-cli#what-gets-published-and-what-does-not)
+            · [AI assistants](https://github.com/MotivatedNaveen/eos-cli/blob/main/docs/ai-adapters.md)

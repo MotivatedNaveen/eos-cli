@@ -1,0 +1,5 @@
+schema_version: 1
+engos_version: '0.1'
+project: hospitality-management
+display_name: 'Hospitality Management'
+provenance: installed by the Engineering OS Factory

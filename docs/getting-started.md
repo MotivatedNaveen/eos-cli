@@ -17,16 +17,17 @@ You also need:
 
 ## 1. Install the CLI
 
-**Binaries and PyPI: coming soon.** Until then, with Python 3.11 or newer:
+Download the binary for your platform and put it on your `PATH` — a single file, no runtime to
+install. **[Installing](../README.md#installing)** has the commands, the checksum verification,
+and the source build if you prefer that.
+
+Check it is there before going further:
 
 ```sh
-git clone https://github.com/MotivatedNaveen/eos-cli.git
-cd eos-cli
-pip install .
 eos --help
 ```
 
-The only runtime dependency is PyYAML.
+If that prints usage, you are ready.
 
 ## 2. Create an account and a project
 
@@ -56,10 +57,28 @@ revoke the old one — keys are cheap.
 Treat it like a password. It is a credential that can replace one project's engineering
 memory.
 
-## 3. Connect your repository
+## 3. Open a terminal and go to your repository
+
+**This step decides which repository gets connected.** `eos` acts on the directory you are
+standing in — it does not ask you which project you mean, because you are already in it.
 
 ```sh
 cd /path/to/your/repository
+```
+
+Confirm you are in the right place. Both of these should describe the project you mean:
+
+```sh
+pwd            # the path you expect
+git status     # "On branch main", and your files
+```
+
+If `git status` says *"not a git repository"*, you are in the wrong directory — `cd` again.
+EOS publishes on commit, so it needs the repository itself, not a folder beside it.
+
+## 4. Connect
+
+```sh
 eos connect
 ```
 
@@ -104,7 +123,7 @@ EOS is now publishing engineering memory this repository already had.
   https://eos.manaaki.in/hospitality-management
 ```
 
-## 4. Read what it wrote
+## 5. Read what it wrote
 
 Two things are worth opening.
 
@@ -120,10 +139,13 @@ find out it was fiction.
 
 **`CLAUDE.md`** — instructions for your AI assistant, generated from the standard. It explains
 the layers, how to record a decision, and that decisions are gated: an assistant proposes, a
-human accepts. See [AI adapters](../README.md#ai-adapters) for what happens if you use a
-different assistant.
+human accepts.
 
-## 5. Commit
+If you use something other than Claude Code, this file is still the right content — EOS just
+does not yet write it to your tool's own instruction path. Point your assistant at it, and see
+[AI adapters](./ai-adapters.md) for why, and for what "support" means.
+
+## 6. Commit
 
 ```sh
 git add -A
@@ -136,7 +158,7 @@ exits.
 
 You will not run `eos` again.
 
-## 6. Write the first thing only you know
+## 7. Write the first thing only you know
 
 Open `docs/constitution/charter.md` and answer one question: **why does this exist?**
 
@@ -156,7 +178,14 @@ and truer than it was.
 | `This repository already publishes as 'x'` | You are connecting a repository that belongs to another project. Nothing was changed. |
 | `Found more than one eos-project.json` | Name the one you mean: `eos connect path/to/file.json`. |
 | `git was not found on this machine` | EOS publishes on commit, so it needs git. |
+| `This is not a git repository` | You are not in the repository. `cd` into it and check `git status`. |
+| `No connection file at …` | The download did not land where you are looking. Pass the path: `eos connect ~/Downloads/eos-project.json`. |
 | The commit hook prints an error | Publishing failed; your commit succeeded. Run `eos publish` to see the full message. |
 | `Connected, but the first publish did not go through` | The connection is stored and the hook will retry on your next commit. |
 
 More in the [FAQ](./faq.md).
+
+## What it should look like afterwards
+
+[`docs/example/`](./example/) is a real engineering layer, copied from an actual `eos connect`
+run — including the empty files, which are empty on purpose.

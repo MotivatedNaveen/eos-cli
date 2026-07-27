@@ -102,6 +102,96 @@ which repository published — it cannot enumerate, clone or read anything of yo
 The only thing that crosses the wire is a payload your machine constructed, authenticated by a
 key you can revoke.
 
+## Does EOS replace Git?
+
+No, and it could not. **Git is where your engineering memory lives.** EOS reads a copy of it
+and projects it.
+
+Everything `eos` writes is a normal file that you commit yourself: markdown and YAML in
+`.engos/`, `docs/` and `discovery/`. Your history, branches, reviews and blame all work
+unchanged, because nothing about them changed. The one thing EOS adds to git is a
+`post-commit` hook that publishes when the engineering layer changed — and it always exits 0,
+so it can never fail a commit.
+
+Delete `.eos/` and the hook and EOS is gone. Your engineering memory stays exactly where it
+was, in your repository, readable with `cat`.
+
+## Does EOS work without Git?
+
+No. `eos connect` refuses outright rather than half-working.
+
+Publishing rides the commit — that is the event that means "this is agreed now" — and exactly
+one branch publishes, which requires branches to exist. Without git there is no event to ride
+and no way to tell an agreed state from a draft.
+
+`eos watch` exists for non-git workflows and is a fallback, not a supported mode: it polls and
+publishes when the engineering layer settles. It cannot answer "is this decided?", so it will
+publish a half-written decision the moment you stop typing.
+
+## Does EOS generate documentation?
+
+No. It never writes engineering content, and this is the principle most worth understanding
+before you adopt it.
+
+Two things it *does* write, both clearly marked:
+
+- **A first journal entry** at connect time, recording what it observed in your repository —
+  commit counts, contributors, languages, what was already under `docs/`, what it left alone.
+  Its header says `Provenance: derived by eos connect — observed, not confirmed`, and it is
+  written once and never regenerated.
+- **Empty, labelled files** — `capabilities: []`, `milestones: []`, a charter that asks why
+  the product exists rather than answering.
+
+That is the whole of it. It will not summarise your code into decisions, infer a roadmap from
+your commits, or fill your charter with something plausible. **A roadmap nobody wrote is worse
+than no roadmap, because you would have to find out it was fiction** — and by then you would
+have stopped trusting everything else in the file.
+
+Your AI assistant may well write engineering memory for you. That is a different thing: it is
+authored, attributed, and gated. An assistant can propose a decision; a human accepts it.
+
+## Why is `.engos/` separate from `docs/`?
+
+Because one is a model and the other is prose, and conflating them makes both worse.
+
+`docs/` is what people write and read: decisions, standards, knowledge, journal. Markdown,
+free-form, as long as it needs to be. Its structure is a directory layout and nothing more.
+
+`.engos/` is what tools reason about: YAML with a schema. `capabilities.yaml` says what the
+product does with a maturity and links to the evidence supporting each claim.
+`roadmap.yaml` holds milestones whose status is **derived** from those capabilities rather than
+declared, so a milestone cannot claim to be done while the work under it is `planned`.
+
+That derivation is only possible because it is structured. You cannot compute "is this
+milestone honest?" from a paragraph. And you should not have to write a paragraph in YAML —
+which is what would happen if the taxonomy lived there too.
+
+The split is also what makes the standard portable: `.engos/` is the Engineering Standard,
+identical for every project and every assistant, while `docs/` is entirely yours.
+
+## Why does only Claude Code work today?
+
+Because EOS generates one assistant instruction file, `CLAUDE.md`, and adapters for other
+tools have not been written yet.
+
+**Your engineering memory is not Claude-specific.** `.engos/` and the taxonomy are the
+Engineering Standard — identical whatever assistant you use — and publishing is completely
+assistant-agnostic. What is missing for other tools is one thing: EOS will not write *their*
+instruction file for you.
+
+Meanwhile `CLAUDE.md` is plain markdown describing the standard, so pointing any assistant at
+it works. It is just not automatic. Full explanation, and what an adapter has to do:
+[AI adapters](./ai-adapters.md).
+
+## What is Engineering Memory, in one paragraph?
+
+The reasoning behind your code, written down where an AI assistant can read it: why something
+is the way it is, what was rejected, what is true but written nowhere else, what happened and
+when, what the product does and how mature each part is. Documentation describes how to use
+software; engineering memory records what produced it. It lives in your repository as markdown
+and YAML — see [`docs/example/`](./example/) for a real one, and
+[Engineering Memory](./engineering-memory.md) for what belongs in it and what does not.
+
 ## Can I self-host?
 
 Yes. See [self-hosting](./self-hosting.md).
@@ -117,10 +207,9 @@ getting one chosen.
 
 Because the server is, and one definition of the engineering standard is better than two.
 
-It should not matter to you: the intended distribution is a single-file binary with no runtime
-to install, and most adopters will be working in .NET, Node, Java or Go and should never learn
-what language EOS is written in. Until those binaries are published, the Python requirement is
-a real cost and is marked as such in the README.
+It should not matter to you. The binary is a single file with no runtime to install — most
+adopters work in .NET, Node, Java or Go and should never have to learn what language EOS is
+written in. Python is the contributor path, not the user path.
 
 ## Can I write my own client?
 

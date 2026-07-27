@@ -20,6 +20,7 @@ So the most useful contributions here, roughly in order:
 | **Documentation** | Everything outside `eos_cli/` lives here and is edited here. Corrections welcome directly. |
 | **Protocol feedback** | If the specification is ambiguous, that is a real defect. See below. |
 | **Another implementation** | The specification's acceptance criterion is untested. See below. |
+| **An assistant's instruction mechanism** | If `docs/ai-adapters.md` names the wrong file for your tool, correcting it is most of the work of the adapter. |
 | **Code patches** | Welcome, but open an issue first so the change can be applied upstream where the tests are. |
 
 Mirrored files are marked in this list; if you are unsure, check whether the path starts with
@@ -60,6 +61,10 @@ implementations produce equivalent results against the same deployment, and that
 tested against a second implementation.
 
 ## Development
+
+Python is the **contributor** path. Users download a binary and never install a runtime — if
+you find yourself writing a document that tells a user to `pip install`, that is a bug in the
+document.
 
 ```sh
 git clone https://github.com/MotivatedNaveen/eos-cli.git

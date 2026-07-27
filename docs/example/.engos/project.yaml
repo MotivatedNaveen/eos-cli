@@ -1,0 +1,9 @@
+# `current_focus` is one sentence: what is in flight right now. Replace it, never
+# append — history belongs in the journal and plans in the roadmap.
+schema_version: 1
+status: active
+current_focus: ''
+owners:
+  - role: Founding Engineer
+    holder: 'Dana Rivera'
+updated: '2026-07-27'

@@ -36,8 +36,11 @@ against a live deployment; this section becomes `## [0.1.0] - <date>` when a rel
   Never writes to `.engos/`, `docs/` or `discovery/`.
 - `eos watch` — a polling fallback for non-git workflows.
 - `eos install` — writes the engineering standard into a repository offline.
-- Single-file binaries for Linux, macOS and Windows, built per platform with checksums. **Not
-  yet published anywhere.**
+- Single-file binaries for Linux, macOS and Windows, built per platform on every push, with
+  SHA-256 checksums. A `v*` tag attaches them to a GitHub Release; none has been tagged yet.
+- `docs/ai-adapters.md` — what "supported" means, why Claude Code works today, and what an
+  adapter for another assistant has to do.
+- `docs/example/` — a real engineering layer, copied from an actual `eos connect` run.
 
 **Security**
 
