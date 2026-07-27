@@ -17,17 +17,21 @@ You also need:
 
 ## 1. Install the CLI
 
-Download the binary for your platform and put it on your `PATH` — a single file, no runtime to
-install. **[Installing](../README.md#installing)** has the commands, the checksum verification,
-and the source build if you prefer that.
+Open **[Releases](https://github.com/MotivatedNaveen/eos-cli/releases/latest)**, download the
+one file for your machine, and put it on your `PATH`. A single file — no runtime, no package
+manager, nothing else installed.
 
-Check it is there before going further:
+The per-platform commands, the macOS quarantine step, and checksum verification are in
+**[Installing](../README.md#installing)**.
+
+Check it before going further:
 
 ```sh
 eos --help
 ```
 
-If that prints usage, you are ready.
+If that prints usage, you are ready. If your terminal says *command not found*, the binary is
+not on your `PATH` — the README covers that, and also how to skip `PATH` entirely.
 
 ## 2. Create an account and a project
 

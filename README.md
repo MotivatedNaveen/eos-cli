@@ -131,25 +131,98 @@ the directory list is a constant at the top of it —
 
 ## Installing
 
-**One file. Nothing to install alongside it — no runtime, no package manager, no toolchain.**
+**Download one file and run it.** No runtime, no package manager, no toolchain — nothing else
+gets installed on your machine.
 
-Pick your platform from **[Releases](https://github.com/MotivatedNaveen/eos-cli/releases)**.
-Not sure which Mac you have? `uname -m` prints `arm64` or `x86_64`.
+### 1. Download
 
-| Platform | File |
+### &nbsp;&nbsp;&nbsp;&nbsp;[⬇&nbsp; Download the latest release](https://github.com/MotivatedNaveen/eos-cli/releases/latest)
+
+Under **Assets** on that page, pick the one file for your machine:
+
+| Your machine | Download |
 |---|---|
-| Linux (x64) | `eos-linux-x64` |
-| macOS (Apple silicon) | `eos-macos-arm64` |
-| macOS (Intel) | `eos-macos-x64` |
-| Windows (x64) | `eos-windows-x64.exe` |
+| **Windows** | `eos-windows-x64.exe` |
+| **Mac** — Apple silicon (M1, M2, M3, M4) | `eos-macos-arm64` |
+| **Mac** — Intel | `eos-macos-x64` |
+| **Linux** — x64 | `eos-linux-x64` |
 
-### macOS and Linux
+*Not sure which Mac you have?* Apple menu → About This Mac. "Apple M‑something" is Apple
+silicon; "Intel" is Intel. From a terminal, `uname -m` prints `arm64` or `x86_64`.
 
-Downloading with `curl` rather than a browser is worth doing on macOS: a browser marks the
-file as quarantined and macOS then refuses to run it, while `curl` does not.
+The file is named by platform so the release page is unambiguous. **You will rename it to
+`eos`** — that is part of the one command below, not an extra step.
+
+### 2. Install it
+
+<details open>
+<summary><b>Windows</b></summary>
+
+Open PowerShell in the folder you downloaded to, then:
+
+```powershell
+$dir = "$env:LOCALAPPDATA\Programs\eos"
+New-Item -ItemType Directory -Force -Path $dir | Out-Null
+Move-Item -Force .\eos-windows-x64.exe "$dir\eos.exe"
+
+# put it on your PATH, once
+[Environment]::SetEnvironmentVariable(
+  "Path", "$([Environment]::GetEnvironmentVariable('Path','User'));$dir", "User")
+```
+
+**Open a new terminal** — `PATH` changes only apply to terminals opened afterwards.
+
+Windows may warn that the file is unrecognised, because the binary is not code-signed. That is
+a reputation check, not a detection; [verify the checksum](#verify-what-you-downloaded) if you
+want certainty about what you have.
+
+</details>
+
+<details open>
+<summary><b>macOS</b></summary>
 
 ```sh
-# set FILE to the one for your platform, from the table above
+chmod +x ~/Downloads/eos-macos-arm64          # or eos-macos-x64 on an Intel Mac
+xattr -d com.apple.quarantine ~/Downloads/eos-macos-arm64
+sudo mv ~/Downloads/eos-macos-arm64 /usr/local/bin/eos
+```
+
+**The `xattr` line is not optional after a browser download.** macOS flags anything a browser
+saved, and refuses to run it — *"cannot be opened because the developer cannot be verified"* —
+because the binary is not signed by an Apple developer account. That command clears the flag.
+(Downloading with `curl` instead never sets it; see below.)
+
+</details>
+
+<details open>
+<summary><b>Linux</b></summary>
+
+```sh
+chmod +x ~/Downloads/eos-linux-x64
+sudo mv ~/Downloads/eos-linux-x64 /usr/local/bin/eos
+```
+
+</details>
+
+### 3. Check it worked
+
+```sh
+eos --help
+```
+
+If that prints usage, you are done. Next: [connect a repository](#connecting-a-repository).
+
+---
+
+<details>
+<summary><b>Prefer the terminal?</b> — one command, no browser</summary>
+
+`latest` always resolves to the newest release, so these do not go stale. On macOS this is also
+the tidier route: `curl` does not set the quarantine flag a browser does, so there is no
+`xattr` step.
+
+```sh
+# set FILE for your platform: eos-macos-arm64 | eos-macos-x64 | eos-linux-x64
 FILE=eos-macos-arm64
 
 curl -fL -o eos "https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/$FILE"
@@ -158,41 +231,36 @@ sudo mv eos /usr/local/bin/eos
 eos --help
 ```
 
-`latest` always resolves to the newest release, so that command does not go stale.
-
-If you did download it in a browser, macOS will refuse to run it — *"cannot be opened because
-the developer cannot be verified"*. The binary is unsigned; clearing the quarantine flag is
-the fix:
-
-```sh
-xattr -d com.apple.quarantine ./eos
-```
-
-### Windows
-
-Download `eos-windows-x64.exe`, rename it to `eos.exe`, and put it in a directory on your
-`PATH`. In PowerShell:
-
 ```powershell
 $dir = "$env:LOCALAPPDATA\Programs\eos"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
 Invoke-WebRequest -Uri "https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-windows-x64.exe" -OutFile "$dir\eos.exe"
-
-# add it to your PATH for this user, once:
-[Environment]::SetEnvironmentVariable("Path", "$([Environment]::GetEnvironmentVariable('Path','User'));$dir", "User")
-
-# open a new terminal, then:
-eos --help
 ```
 
-The binary is unsigned, so SmartScreen may warn the first time and some antivirus products
-flag single-file executables of this kind on sight. Both are reputation heuristics rather than
-detections — the checksum below is how you actually verify what you have.
+</details>
 
-### Verify what you downloaded
+<details>
+<summary><b>Don't want to touch <code>PATH</code>?</b> — you don't have to</summary>
 
-Every release ships `SHA256SUMS` beside the binaries. Running a binary from the internet
-without checking it is a habit worth not having:
+`eos` works from wherever it sits. Run it with a path:
+
+```sh
+~/Downloads/eos connect          # .\eos.exe connect on Windows
+```
+
+The commit hook it installs records the **absolute path** to the binary, so publishing keeps
+working afterwards without `eos` ever being on your `PATH`.
+
+The one catch: move or delete the binary later and that repository stops publishing. Putting it
+on `PATH` is the version that survives housekeeping.
+
+</details>
+
+<details>
+<summary id="verify-what-you-downloaded"><b>Verify what you downloaded</b> — recommended</summary>
+
+Every release ships `SHA256SUMS` beside the binaries. Running an unsigned binary from the
+internet without checking it is a habit worth not having:
 
 ```sh
 curl -fLO "https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/SHA256SUMS"
@@ -203,19 +271,21 @@ shasum -a 256 -c SHA256SUMS --ignore-missing
 (Get-FileHash .\eos.exe -Algorithm SHA256).Hash    # compare against SHA256SUMS
 ```
 
-### Confirm it works
+</details>
 
-```sh
-eos --help
-```
+<details>
+<summary><b>Build it yourself</b> — contributors</summary>
 
-If that prints usage, you are done. There is nothing else to install.
+[CONTRIBUTING.md](CONTRIBUTING.md#building-a-binary) has the four commands. You do not need
+this to use EOS.
+
+</details>
 
 <!-- RELEASE-PENDING: delete this block when v0.1.0 is tagged. -->
-> **The first release has not been tagged yet**, so the Releases page is empty and the
-> commands above have nothing to download. Until it lands, building it yourself is the only
-> route — [CONTRIBUTING.md](CONTRIBUTING.md#building-a-binary) has the four commands. This is
-> the only place in the repository that fact is recorded.
+> **The first release has not been tagged yet**, so the Releases page is empty and the download
+> above has nothing behind it. Until it lands, building it yourself is the only route —
+> [CONTRIBUTING.md](CONTRIBUTING.md#building-a-binary). This is the only place in the repository
+> that fact is recorded.
 
 ## Connecting a repository
 

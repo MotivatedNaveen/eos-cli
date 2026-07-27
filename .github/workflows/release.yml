@@ -123,36 +123,53 @@ jobs:
           files: release/*
           generate_release_notes: true
           body: |
-            Single-file executables. No Python, no runtime, nothing to install alongside them.
+            Download one file and run it. No runtime, no package manager, nothing else
+            installed on your machine.
 
-            | Platform | File |
+            ### Which file?
+
+            | Your machine | Download |
             |---|---|
-            | Linux (x64) | `eos-linux-x64` |
-            | macOS (Apple silicon) | `eos-macos-arm64` |
-            | macOS (Intel) | `eos-macos-x64` |
-            | Windows (x64) | `eos-windows-x64.exe` |
+            | **Windows** | `eos-windows-x64.exe` |
+            | **Mac** — Apple silicon (M1–M4) | `eos-macos-arm64` |
+            | **Mac** — Intel | `eos-macos-x64` |
+            | **Linux** — x64 | `eos-linux-x64` |
 
-            Not sure which Mac you have? `uname -m` prints `arm64` or `x86_64`.
+            Not sure which Mac? Apple menu -> About This Mac, or run `uname -m`.
 
-            **1. Verify what you downloaded**, before running a binary from the internet:
+            ### Install
+
+            **macOS** — the `xattr` line is required after a browser download; macOS refuses to
+            run anything a browser saved unless it is signed, and this binary is not.
+
+            ```sh
+            chmod +x ~/Downloads/eos-macos-arm64
+            xattr -d com.apple.quarantine ~/Downloads/eos-macos-arm64
+            sudo mv ~/Downloads/eos-macos-arm64 /usr/local/bin/eos
+            ```
+
+            **Linux**
+
+            ```sh
+            chmod +x ~/Downloads/eos-linux-x64
+            sudo mv ~/Downloads/eos-linux-x64 /usr/local/bin/eos
+            ```
+
+            **Windows** — rename to `eos.exe` and put it in a folder on your `PATH`. The
+            [README](https://github.com/MotivatedNaveen/eos-cli#installing) has a PowerShell
+            snippet that does both.
+
+            ### Verify it
 
             ```sh
             shasum -a 256 -c SHA256SUMS --ignore-missing
-            ```
-
-            **2. Put it on your `PATH`:**
-
-            ```sh
-            chmod +x eos-linux-x64
-            sudo mv eos-linux-x64 /usr/local/bin/eos
             eos --help
             ```
 
-            On Windows, rename `eos-windows-x64.exe` to `eos.exe` and move it to a directory on
-            your `PATH`.
+            ### Then connect a repository
 
-            **3. Connect a repository.** Create a project in EOS, download its connection file,
-            then — from inside the repository you want to connect:
+            Create a project in EOS, download its connection file, and from **inside** the
+            repository you want to connect:
 
             ```sh
             cd /path/to/your/repository
