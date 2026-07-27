@@ -73,19 +73,20 @@ jobs:
         shell: bash
         run: |
           BIN=dist/eos
-          [ -f "$BIN.exe" ] && BIN="$BIN.exe"
+          if [ -f "$BIN.exe" ]; then BIN="$BIN.exe"; fi
           "$BIN" --help
           "$BIN" connect --help
           "$BIN" publish --help
 
+      # Checksummed with Python rather than `shasum`, which is not on the Windows runner's
+      # PATH — and `if`, not `[ ... ] && ...`, because these steps run under `set -e` and a
+      # trailing false test fails the step rather than skipping the assignment.
       - name: Name and checksum
         shell: bash
         run: |
           cd dist
-          SRC=eos
-          [ -f eos.exe ] && SRC=eos.exe
-          mv "$SRC" "${{ matrix.asset }}"
-          shasum -a 256 "${{ matrix.asset }}" | tee "${{ matrix.asset }}.sha256"
+          if [ -f eos.exe ]; then mv eos.exe "${{ matrix.asset }}"; else mv eos "${{ matrix.asset }}"; fi
+          python -c "import hashlib,sys;p=sys.argv[1];print(hashlib.sha256(open(p,'rb').read()).hexdigest()+'  '+p)" "${{ matrix.asset }}" | tee "${{ matrix.asset }}.sha256"
 
       - uses: actions/upload-artifact@v4
         with:
