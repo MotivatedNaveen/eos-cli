@@ -43,8 +43,8 @@ this:
 {
   "version": 1,
   "server": "https://eos.manaaki.in",
-  "project": "payments-gateway",
-  "display_name": "Payments Gateway",
+  "project": "hospitality-management",
+  "display_name": "Hospitality Management",
   "publish_key": "eospk_..."
 }
 ```
@@ -67,10 +67,10 @@ It finds the downloaded file — in the current directory, the repository root, 
 Downloads folder — and shows you what it is about to do:
 
 ```
-  Repository    Payments Gateway
-                /home/dana/work/payments-gateway
+  Repository    Hospitality Management
+                /home/dana/work/hospitality-management
   Organization  Dana Rivera
-  Project       payments-gateway
+  Project       hospitality-management
   Publishes to  https://eos.manaaki.in
   Publishes on  main
   From          /home/dana/Downloads/eos-project.json
@@ -89,10 +89,10 @@ Setting up the engineering layer ...
   connection stored in .eos/ (gitignored - the key is never committed)
   commit hook installed - commits on 'main' publish automatically
 Publishing ...
-  OK: published 12 files for 'payments-gateway'
+  OK: published 12 files for 'hospitality-management'
   connection file used and deleted (eos-project.json - it held the key)
 
-Connected. payments-gateway publishes to https://eos.manaaki.in on every commit to 'main'.
+Connected. hospitality-management publishes to https://eos.manaaki.in on every commit to 'main'.
 
   Read       1,284 commits since 2019-03-04 - 7 contributors, last change 2026-07-26
   Found      23 documents under docs/, 11 of them decision-shaped
@@ -101,7 +101,7 @@ Connected. payments-gateway publishes to https://eos.manaaki.in on every commit 
   Published  27 files
 
 EOS is now publishing engineering memory this repository already had.
-  https://eos.manaaki.in/payments-gateway
+  https://eos.manaaki.in/hospitality-management
 ```
 
 ## 4. Read what it wrote
