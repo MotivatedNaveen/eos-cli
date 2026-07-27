@@ -17,8 +17,8 @@ Three version numbers exist in EOS and are easy to confuse. This file tracks onl
 
 ### 0.1.0 — first public release
 
-The first tagged release. Single-file executables for Linux, macOS (both architectures) and
-Windows, with SHA-256 checksums, from the Releases page. No runtime to install.
+The first tagged release. Single-file executables for Linux, macOS (Apple silicon) and Windows,
+with SHA-256 checksums, from the Releases page. No runtime to install.
 
 **Added**
 
@@ -38,8 +38,9 @@ Windows, with SHA-256 checksums, from the Releases page. No runtime to install.
   Never writes to `.engos/`, `docs/` or `discovery/`.
 - `eos watch` — a polling fallback for non-git workflows.
 - `eos install` — writes the engineering standard into a repository offline.
-- Single-file binaries for Linux, macOS (Apple silicon and Intel) and Windows, built per
-  platform on every push with SHA-256 checksums. A `v*` tag attaches them to a GitHub Release.
+- Single-file binaries for Linux, macOS (Apple silicon) and Windows, built per platform with
+  SHA-256 checksums. **No Intel Mac build** — the `macos-13` runner label no longer allocates,
+  and a matrix job that never starts would block every release. Build from source meanwhile. A `v*` tag attaches them to a GitHub Release.
   The binaries are unsigned: macOS quarantines a browser-downloaded copy and Windows
   SmartScreen may warn. Both are documented in the README rather than left to be discovered.
 - `docs/ai-adapters.md` — what "supported" means, why Claude Code works today, and what an

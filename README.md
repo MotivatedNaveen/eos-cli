@@ -149,18 +149,22 @@ the newest release.
 |---|---|
 | **Windows** | [**`eos-windows-x64.exe`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-windows-x64.exe) |
 | **Mac** — Apple silicon (M1, M2, M3, M4) | [**`eos-macos-arm64`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-macos-arm64) |
-| **Mac** — Intel | [**`eos-macos-x64`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-macos-x64) |
 | **Linux** — x64 | [**`eos-linux-x64`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-linux-x64) |
 
-*Not sure which Mac you have?* Apple menu → About This Mac. "Apple M‑something" is Apple
-silicon; "Intel" is Intel. From a terminal, `uname -m` prints `arm64` or `x86_64`.
+*Not sure which Mac you have?* Apple menu → About This Mac — "Apple M‑something" is Apple
+silicon. From a terminal, `uname -m` prints `arm64` or `x86_64`.
 
-Prefer to see everything first — release notes, all four binaries, and the checksums?
+> **Intel Macs are not built yet.** The arm64 binary will not run on one — Rosetta translates
+> Intel software to Apple silicon, not the other way round. Until a build exists,
+> [build from source](CONTRIBUTING.md#building-a-binary), or open an issue: knowing that
+> someone actually needs it is what would prioritise it.
+
+Prefer to see everything first — release notes, every binary, and the checksums?
 **[Browse the latest release](https://github.com/MotivatedNaveen/eos-cli/releases/latest)**. Downloading straight from the table skips that
 page, so if you want to verify what you got, [the checksum is here](#verify-what-you-downloaded)
 and [`SHA256SUMS`](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/SHA256SUMS) is a file in every release.
 
-The files are named by platform so a release page listing four binaries is unambiguous.
+The files are named by platform so a release page listing several binaries is unambiguous.
 **You will rename yours to `eos`** — that is part of the single command below, not an extra
 step.
 
@@ -193,7 +197,7 @@ want certainty about what you have.
 <summary><b>macOS</b></summary>
 
 ```sh
-chmod +x ~/Downloads/eos-macos-arm64          # or eos-macos-x64 on an Intel Mac
+chmod +x ~/Downloads/eos-macos-arm64
 xattr -d com.apple.quarantine ~/Downloads/eos-macos-arm64
 sudo mv ~/Downloads/eos-macos-arm64 /usr/local/bin/eos
 ```
@@ -233,7 +237,7 @@ the tidier route: `curl` does not set the quarantine flag a browser does, so the
 `xattr` step.
 
 ```sh
-# set FILE for your platform: eos-macos-arm64 | eos-macos-x64 | eos-linux-x64
+# set FILE for your platform: eos-macos-arm64 | eos-linux-x64
 FILE=eos-macos-arm64
 
 curl -fL -o eos "https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/$FILE"

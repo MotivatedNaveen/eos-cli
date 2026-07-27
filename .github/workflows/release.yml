@@ -15,9 +15,29 @@ on:
   push:
     branches: [main]
     tags: ["v*"]
+    # Documentation must not rebuild four binaries. Every docs commit was queueing a full
+    # matrix, and they stacked behind each other for hours.
+    paths:
+      - "eos_cli/**"
+      - "eos.spec"
+      - "eos_launcher.py"
+      - "pyproject.toml"
+      - ".github/workflows/release.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "eos_cli/**"
+      - "eos.spec"
+      - "eos_launcher.py"
+      - "pyproject.toml"
+      - ".github/workflows/release.yml"
   workflow_dispatch:
+
+# Supersede an in-flight build when a newer commit lands — but never a tag. Cancelling a
+# release halfway would leave a tag with no binaries behind it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 permissions:
   contents: read
@@ -32,8 +52,10 @@ jobs:
             asset: eos-linux-x64
           - os: macos-latest          # Apple silicon
             asset: eos-macos-arm64
-          - os: macos-13               # Intel. `macos-latest` is arm64, so without this an
-            asset: eos-macos-x64       # Intel Mac downloads a binary that cannot run at all.
+          # No Intel Mac build. `macos-13` was tried and its jobs queue indefinitely — the
+          # label no longer allocates a runner. A matrix entry that never starts is worse than
+          # an absent platform, because `release` needs `build` and would wait forever. Intel
+          # Macs are documented as build-from-source until a working label is confirmed.
           - os: windows-latest
             asset: eos-windows-x64.exe
     runs-on: ${{ matrix.os }}
@@ -132,10 +154,12 @@ jobs:
             |---|---|
             | **Windows** | `eos-windows-x64.exe` |
             | **Mac** — Apple silicon (M1–M4) | `eos-macos-arm64` |
-            | **Mac** — Intel | `eos-macos-x64` |
             | **Linux** — x64 | `eos-linux-x64` |
 
-            Not sure which Mac? Apple menu -> About This Mac, or run `uname -m`.
+            Not sure which Mac? Apple menu -> About This Mac, or run `uname -m` — `arm64` is
+            Apple silicon. **Intel Macs are not built yet** and cannot run the arm64 binary
+            (Rosetta translates Intel to Apple silicon, not the reverse). Build from source, or
+            open an issue — knowing someone needs it is what would prioritise it.
 
             ### Install
 
