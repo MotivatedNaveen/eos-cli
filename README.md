@@ -134,24 +134,35 @@ the directory list is a constant at the top of it —
 **Download one file and run it.** No runtime, no package manager, no toolchain — nothing else
 gets installed on your machine.
 
+<!-- RELEASE-PENDING: delete this block when v0.1.0 is tagged. -->
+> **⚠ The first release has not been tagged yet.** The download links below have nothing
+> behind them and will 404 until it lands. Building it yourself is the only route until then —
+> [CONTRIBUTING.md](CONTRIBUTING.md#building-a-binary), four commands. This is the only place
+> in the repository that fact is recorded; everything else becomes correct on tagging.
+
 ### 1. Download
 
-### &nbsp;&nbsp;&nbsp;&nbsp;[⬇&nbsp; Download the latest release](https://github.com/MotivatedNaveen/eos-cli/releases/latest)
-
-Under **Assets** on that page, pick the one file for your machine:
+**Click the file for your machine.** It downloads straight away — these links always point at
+the newest release.
 
 | Your machine | Download |
 |---|---|
-| **Windows** | `eos-windows-x64.exe` |
-| **Mac** — Apple silicon (M1, M2, M3, M4) | `eos-macos-arm64` |
-| **Mac** — Intel | `eos-macos-x64` |
-| **Linux** — x64 | `eos-linux-x64` |
+| **Windows** | [**`eos-windows-x64.exe`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-windows-x64.exe) |
+| **Mac** — Apple silicon (M1, M2, M3, M4) | [**`eos-macos-arm64`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-macos-arm64) |
+| **Mac** — Intel | [**`eos-macos-x64`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-macos-x64) |
+| **Linux** — x64 | [**`eos-linux-x64`**](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-linux-x64) |
 
 *Not sure which Mac you have?* Apple menu → About This Mac. "Apple M‑something" is Apple
 silicon; "Intel" is Intel. From a terminal, `uname -m` prints `arm64` or `x86_64`.
 
-The file is named by platform so the release page is unambiguous. **You will rename it to
-`eos`** — that is part of the one command below, not an extra step.
+Prefer to see everything first — release notes, all four binaries, and the checksums?
+**[Browse the latest release](https://github.com/MotivatedNaveen/eos-cli/releases/latest)**. Downloading straight from the table skips that
+page, so if you want to verify what you got, [the checksum is here](#verify-what-you-downloaded)
+and [`SHA256SUMS`](https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/SHA256SUMS) is a file in every release.
+
+The files are named by platform so a release page listing four binaries is unambiguous.
+**You will rename yours to `eos`** — that is part of the single command below, not an extra
+step.
 
 ### 2. Install it
 
@@ -280,12 +291,6 @@ shasum -a 256 -c SHA256SUMS --ignore-missing
 this to use EOS.
 
 </details>
-
-<!-- RELEASE-PENDING: delete this block when v0.1.0 is tagged. -->
-> **The first release has not been tagged yet**, so the Releases page is empty and the download
-> above has nothing behind it. Until it lands, building it yourself is the only route —
-> [CONTRIBUTING.md](CONTRIBUTING.md#building-a-binary). This is the only place in the repository
-> that fact is recorded.
 
 ## Connecting a repository
 
