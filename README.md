@@ -17,6 +17,7 @@ itself on every commit.
 **It never uploads your source code.** Three directories — `.engos/`, `docs/`, `discovery/` —
 and nothing else. [What gets published](#what-gets-published-and-what-does-not).
 
+<!-- RELEASE-PENDING: delete this block when v0.1.0 is tagged. -->
 > **Status: pre-release (v0.1.0).** The CLI works end to end and is used daily against a live
 > deployment. The first binary release is being prepared — see [Installing](#installing).
 
@@ -30,7 +31,7 @@ and nothing else. [What gets published](#what-gets-published-and-what-does-not).
 | [The problem](#the-problem-it-addresses) | why this exists |
 | [What Engineering Memory is](#what-engineering-memory-is) | and how it differs from documentation |
 | [What gets published](#what-gets-published-and-what-does-not) | source code never leaves your machine |
-| [Installing](#installing) | download, or build from source |
+| [Installing](#installing) | one file, no runtime, three platforms |
 | [Connecting a repository](#connecting-a-repository) | the complete workflow, step by step |
 | [AI assistants](#ai-assistants) | Claude Code today; the adapter model for the rest |
 | [What it will not do](#what-it-will-not-do) | deliberate absences |
@@ -124,52 +125,97 @@ And `eos connect` tells you what it left alone, rather than quietly taking a sub
              (EOS reads docs/, .engos/ and discovery/ only)
 ```
 
-You can verify this in about a minute: [`eos_cli/client.py`](eos_cli/client.py) is 75 lines and
-the directory list is a constant on line 18.
+You do not have to take that on trust. The code that decides what gets sent is 75 lines, and
+the directory list is a constant at the top of it —
+[`eos_cli/client.py`](eos_cli/client.py), line 18.
 
 ## Installing
 
-### Download the binary — the normal way
+**One file. Nothing to install alongside it — no runtime, no package manager, no toolchain.**
 
-A single file. No Python, no runtime, nothing to install alongside it.
+Pick your platform from **[Releases](https://github.com/MotivatedNaveen/eos-cli/releases)**.
+Not sure which Mac you have? `uname -m` prints `arm64` or `x86_64`.
 
-Download for your platform from **[Releases](https://github.com/MotivatedNaveen/eos-cli/releases)**,
-make it executable, and put it on your `PATH`:
+| Platform | File |
+|---|---|
+| Linux (x64) | `eos-linux-x64` |
+| macOS (Apple silicon) | `eos-macos-arm64` |
+| macOS (Intel) | `eos-macos-x64` |
+| Windows (x64) | `eos-windows-x64.exe` |
+
+### macOS and Linux
+
+Downloading with `curl` rather than a browser is worth doing on macOS: a browser marks the
+file as quarantined and macOS then refuses to run it, while `curl` does not.
 
 ```sh
-# macOS / Linux
-chmod +x eos-macos-arm64          # or eos-linux-x64
-sudo mv eos-macos-arm64 /usr/local/bin/eos
+# set FILE to the one for your platform, from the table above
+FILE=eos-macos-arm64
+
+curl -fL -o eos "https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/$FILE"
+chmod +x eos
+sudo mv eos /usr/local/bin/eos
 eos --help
 ```
+
+`latest` always resolves to the newest release, so that command does not go stale.
+
+If you did download it in a browser, macOS will refuse to run it — *"cannot be opened because
+the developer cannot be verified"*. The binary is unsigned; clearing the quarantine flag is
+the fix:
+
+```sh
+xattr -d com.apple.quarantine ./eos
+```
+
+### Windows
+
+Download `eos-windows-x64.exe`, rename it to `eos.exe`, and put it in a directory on your
+`PATH`. In PowerShell:
 
 ```powershell
-# Windows — move eos-windows-x64.exe to a directory on your PATH, renamed to eos.exe
+$dir = "$env:LOCALAPPDATA\Programs\eos"
+New-Item -ItemType Directory -Force -Path $dir | Out-Null
+Invoke-WebRequest -Uri "https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/eos-windows-x64.exe" -OutFile "$dir\eos.exe"
+
+# add it to your PATH for this user, once:
+[Environment]::SetEnvironmentVariable("Path", "$([Environment]::GetEnvironmentVariable('Path','User'));$dir", "User")
+
+# open a new terminal, then:
 eos --help
 ```
 
-Verify what you downloaded before running it:
+The binary is unsigned, so SmartScreen may warn the first time and some antivirus products
+flag single-file executables of this kind on sight. Both are reputation heuristics rather than
+detections — the checksum below is how you actually verify what you have.
+
+### Verify what you downloaded
+
+Every release ships `SHA256SUMS` beside the binaries. Running a binary from the internet
+without checking it is a habit worth not having:
 
 ```sh
+curl -fLO "https://github.com/MotivatedNaveen/eos-cli/releases/latest/download/SHA256SUMS"
 shasum -a 256 -c SHA256SUMS --ignore-missing
 ```
 
-> **The first release is being prepared.** Until it lands, the Releases page is empty and the
-> source build below is the only route. This is the one place that fact is recorded; every
-> other document points here.
+```powershell
+(Get-FileHash .\eos.exe -Algorithm SHA256).Hash    # compare against SHA256SUMS
+```
 
-### Build from source — contributors, and anyone who prefers it
-
-Python 3.11 or newer. The only runtime dependency is PyYAML.
+### Confirm it works
 
 ```sh
-git clone https://github.com/MotivatedNaveen/eos-cli.git
-cd eos-cli
-pip install .
 eos --help
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) to build a binary yourself.
+If that prints usage, you are done. There is nothing else to install.
+
+<!-- RELEASE-PENDING: delete this block when v0.1.0 is tagged. -->
+> **The first release has not been tagged yet**, so the Releases page is empty and the
+> commands above have nothing to download. Until it lands, building it yourself is the only
+> route — [CONTRIBUTING.md](CONTRIBUTING.md#building-a-binary) has the four commands. This is
+> the only place in the repository that fact is recorded.
 
 ## Connecting a repository
 

@@ -62,24 +62,37 @@ tested against a second implementation.
 
 ## Development
 
-Python is the **contributor** path. Users download a binary and never install a runtime — if
-you find yourself writing a document that tells a user to `pip install`, that is a bug in the
-document.
+`eos` happens to be written in Python. **Users never learn that** — they download a single
+binary with no runtime to install, and the moment a user-facing document tells someone to
+`pip install`, that document has a bug. Everything below is for people working *on* the tool.
 
 ```sh
 git clone https://github.com/MotivatedNaveen/eos-cli.git
 cd eos-cli
-pip install -e .
+pip install -e .          # Python 3.11+; the only runtime dependency is PyYAML
 eos --help
 ```
 
-Build a binary for your platform:
+### Building a binary
+
+The same four commands CI runs. The output is a single file that runs on a machine with no
+Python at all:
 
 ```sh
 pip install pyinstaller
 pyinstaller --clean --noconfirm eos.spec
-./dist/eos --help
+./dist/eos --help          # dist\eos.exe on Windows
 ```
+
+A binary is **not cross-compiled** — each one is built on the operating system it targets,
+which is why the release workflow runs a four-platform matrix (Linux, macOS on both
+architectures, Windows) rather than building once.
+
+The binaries are unsigned. On macOS that means a browser-downloaded copy is quarantined and
+refused until `xattr -d com.apple.quarantine` clears it; on Windows it means SmartScreen may
+warn on first run. Both are documented in the README's install section, and both would be
+fixed by code signing — an Apple Developer account and a Windows certificate — which is a
+cost decision, not a technical one.
 
 The tests are upstream. What you *can* check locally:
 

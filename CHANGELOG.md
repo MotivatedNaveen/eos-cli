@@ -13,10 +13,12 @@ Three version numbers exist in EOS and are easy to confuse. This file tracks onl
 
 ## [Unreleased]
 
-### 0.1.0 — first public release, not yet published
+<!-- RELEASE: on tagging, retitle this to `## [0.1.0] - YYYY-MM-DD` and delete this note. -->
 
-No binary or PyPI package has been published. The code below is complete and in daily use
-against a live deployment; this section becomes `## [0.1.0] - <date>` when a release exists.
+### 0.1.0 — first public release
+
+The first tagged release. Single-file executables for Linux, macOS (both architectures) and
+Windows, with SHA-256 checksums, from the Releases page. No runtime to install.
 
 **Added**
 
@@ -36,8 +38,10 @@ against a live deployment; this section becomes `## [0.1.0] - <date>` when a rel
   Never writes to `.engos/`, `docs/` or `discovery/`.
 - `eos watch` — a polling fallback for non-git workflows.
 - `eos install` — writes the engineering standard into a repository offline.
-- Single-file binaries for Linux, macOS and Windows, built per platform on every push, with
-  SHA-256 checksums. A `v*` tag attaches them to a GitHub Release; none has been tagged yet.
+- Single-file binaries for Linux, macOS (Apple silicon and Intel) and Windows, built per
+  platform on every push with SHA-256 checksums. A `v*` tag attaches them to a GitHub Release.
+  The binaries are unsigned: macOS quarantines a browser-downloaded copy and Windows
+  SmartScreen may warn. Both are documented in the README rather than left to be discovered.
 - `docs/ai-adapters.md` — what "supported" means, why Claude Code works today, and what an
   adapter for another assistant has to do.
 - `docs/example/` — a real engineering layer, copied from an actual `eos connect` run.

@@ -24,8 +24,9 @@ Nothing else is read, packaged or sent. Not your source, not your README, not yo
 not `CLAUDE.md`. `eos connect` prints what it left alone rather than quietly taking a subset,
 and the server rejects any path outside those roots.
 
-You can verify this yourself: `eos_cli/client.py` is 75 lines and the directory list is a
-constant on line 18.
+You do not have to take that on trust. The code that decides what to send is 75 lines with
+the directory list as a constant at the top — [`eos_cli/client.py`](../eos_cli/client.py),
+line 18. It reads the same in any language.
 
 ## What exactly can the publish key do?
 
@@ -203,13 +204,18 @@ Because choosing one is easy to do and hard to undo, and it has not been decided
 depending on this, open an issue — a licence question from a real user is the fastest route to
 getting one chosen.
 
-## Why is the CLI written in Python?
+## Do I need Python installed?
 
-Because the server is, and one definition of the engineering standard is better than two.
+**No.** `eos` is a single executable with no runtime, no package manager and no dependencies to
+install. Download it, put it on your `PATH`, done. Nothing about your machine changes.
 
-It should not matter to you. The binary is a single file with no runtime to install — most
-adopters work in .NET, Node, Java or Go and should never have to learn what language EOS is
-written in. Python is the contributor path, not the user path.
+It happens to be written in Python — the server is, and one definition of the engineering
+standard is better than two — but that is an implementation detail of the build, the same way
+you do not install Go to use `gh` or Rust to use `rg`. If a document ever tells you to
+`pip install` something, that document has a bug.
+
+Python appears in exactly one place: [CONTRIBUTING.md](../CONTRIBUTING.md), for people working
+on the tool itself.
 
 ## Can I write my own client?
 
@@ -227,8 +233,9 @@ train on it, does not aggregate across tenants, and does not read it into any mo
 
 ## Is this production-ready?
 
-The CLI works end to end and is used daily against a live deployment. It is version 0.1.0, no
-binary has been published, and the licence is undecided. Judge accordingly.
+The CLI works end to end and is used daily against a live deployment. It is version 0.1.0 and
+the licence is undecided — judge accordingly. Current release status is in the
+[README](../README.md#installing), which is the only place it is recorded.
 
 ## How do I disconnect?
 

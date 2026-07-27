@@ -30,8 +30,10 @@ jobs:
         include:
           - os: ubuntu-latest
             asset: eos-linux-x64
-          - os: macos-latest
+          - os: macos-latest          # Apple silicon
             asset: eos-macos-arm64
+          - os: macos-13               # Intel. `macos-latest` is arm64, so without this an
+            asset: eos-macos-x64       # Intel Mac downloads a binary that cannot run at all.
           - os: windows-latest
             asset: eos-windows-x64.exe
     runs-on: ${{ matrix.os }}
@@ -127,7 +129,10 @@ jobs:
             |---|---|
             | Linux (x64) | `eos-linux-x64` |
             | macOS (Apple silicon) | `eos-macos-arm64` |
+            | macOS (Intel) | `eos-macos-x64` |
             | Windows (x64) | `eos-windows-x64.exe` |
+
+            Not sure which Mac you have? `uname -m` prints `arm64` or `x86_64`.
 
             **1. Verify what you downloaded**, before running a binary from the internet:
 

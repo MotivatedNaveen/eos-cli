@@ -118,10 +118,13 @@ Neither changes `.engos/`. That is the point of the split.
 
 ## What an adapter has to do
 
+*(This section is for anyone thinking of building one. Skip it if you are here to use EOS.)*
+
 Small, and specified by what already exists:
 
-1. Emit the instruction content — one definition, in `eos_cli/installer.py`, rendered into the
-   target tool's file and path.
+1. Emit the instruction content — one definition, rendered into the target tool's file and
+   path. There is a single template in the CLI source; an adapter adds a destination, not a
+   second copy of the standard.
 2. Be refreshed by `eos upgrade`, which already regenerates EOS-owned artifacts in place and
    backs up a file that diverged.
 3. Never write outside the paths it owns. `upgrade` does not touch `.engos/`, `docs/` or
