@@ -11,11 +11,9 @@ Three version numbers exist in EOS and are easy to confuse. This file tracks onl
 | `engos_version` (`0.1`) | the `.engos` **content schema**, in the manifest and every payload |
 | standard stamp (`2026-07-27.1`) | the artifacts the CLI installs — assistant instructions, commit hook |
 
-## [Unreleased]
+## [0.1.0] — 2026-07-27
 
-<!-- RELEASE: on tagging, retitle this to `## [0.1.0] - YYYY-MM-DD` and delete this note. -->
-
-### 0.1.0 — first public release
+### First public release
 
 The first tagged release. Single-file executables for Linux, macOS (Apple silicon) and Windows,
 with SHA-256 checksums, from the Releases page. No runtime to install.

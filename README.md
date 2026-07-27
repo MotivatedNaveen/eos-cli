@@ -17,10 +17,6 @@ itself on every commit.
 **It never uploads your source code.** Three directories — `.engos/`, `docs/`, `discovery/` —
 and nothing else. [What gets published](#what-gets-published-and-what-does-not).
 
-<!-- RELEASE-PENDING: delete this block when v0.1.0 is tagged. -->
-> **Status: pre-release (v0.1.0).** The CLI works end to end and is used daily against a live
-> deployment. The first binary release is being prepared — see [Installing](#installing).
-
 ---
 
 ## Contents
@@ -133,12 +129,6 @@ the directory list is a constant at the top of it —
 
 **Download one file and run it.** No runtime, no package manager, no toolchain — nothing else
 gets installed on your machine.
-
-<!-- RELEASE-PENDING: delete this block when v0.1.0 is tagged. -->
-> **⚠ The first release has not been tagged yet.** The download links below have nothing
-> behind them and will 404 until it lands. Building it yourself is the only route until then —
-> [CONTRIBUTING.md](CONTRIBUTING.md#building-a-binary), four commands. This is the only place
-> in the repository that fact is recorded; everything else becomes correct on tagging.
 
 ### 1. Download
 

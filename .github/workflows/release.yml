@@ -15,23 +15,18 @@ on:
   push:
     branches: [main]
     tags: ["v*"]
-    # Documentation must not rebuild four binaries. Every docs commit was queueing a full
-    # matrix, and they stacked behind each other for hours.
-    paths:
-      - "eos_cli/**"
-      - "eos.spec"
-      - "eos_launcher.py"
-      - "pyproject.toml"
-      - ".github/workflows/release.yml"
   pull_request:
     branches: [main]
-    paths:
-      - "eos_cli/**"
-      - "eos.spec"
-      - "eos_launcher.py"
-      - "pyproject.toml"
-      - ".github/workflows/release.yml"
   workflow_dispatch:
+
+# No `paths` filter, deliberately, and it was tried. A `paths` filter under `push` applies to
+# every push including tags, and a tag points at a commit whose diff may match nothing — so
+# the release build might simply not fire. Being wrong about that edge case costs a tag with
+# no binaries behind it, which is the exact failure the Intel runner would have caused.
+#
+# The waste it was solving is handled by `concurrency` below instead: a docs push does start a
+# build, and the next push cancels it. Three minutes of a free runner is a cheaper price than
+# a release that silently does not happen.
 
 # Supersede an in-flight build when a newer commit lands — but never a tag. Cancelling a
 # release halfway would leave a tag with no binaries behind it.
