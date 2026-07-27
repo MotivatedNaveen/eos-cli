@@ -1,0 +1,25 @@
+# Build output. Binaries are produced by CI, per platform, and never committed — a
+# checked-in binary is a binary nobody can tell the provenance of.
+build/
+dist/
+*.egg-info/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# EOS's own local connection, if this repository is ever connected to a deployment.
+# It holds a publish key and must never be committed.
+.eos/
+eos-project.json
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

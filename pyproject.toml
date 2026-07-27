@@ -1,0 +1,37 @@
+# The EOS command-line client — the only thing a developer installs.
+#
+# This file describes `eos_cli` and nothing else: installing the CLI must not drag in a web
+# framework, an ORM or a migration tool. A CLI that needs those to run is a CLI nobody can
+# package, and packaging it is the whole point.
+#
+# `eos_cli/`, this file, `eos.spec` and `eos_launcher.py` are one self-contained unit and are
+# kept that way deliberately — they are mirrored verbatim into the public `eos-cli`
+# repository, which builds the released binaries. A copy that needed editing on the way over
+# would drift, and the drift would be invisible until a build failed.
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eos-cli"
+version = "0.1.0"
+description = "Connect a repository to Engineering OS and publish its engineering memory on every commit."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "Engineering OS" }]
+keywords = ["engineering", "documentation", "adr", "engineering-memory"]
+
+# PyYAML and nothing else. The manifest is YAML; writing a parser to avoid one dependency
+# would trade a packaging problem for a correctness one.
+dependencies = ["PyYAML>=6.0"]
+
+[project.scripts]
+# The entry point that replaces `python -m app.factory`. A console script's sys.path[0] is the
+# scripts directory, not the working directory — which is what stops a repository containing
+# its own `app.py` from shadowing ours and being executed instead.
+eos = "eos_cli.cli:main"
+
+[tool.setuptools]
+packages = ["eos_cli"]

@@ -1,0 +1,84 @@
+name: Bug report
+description: Something the CLI did that it should not have, or did not do that it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Two things worth knowing before you start.
+
+        **A traceback is always a bug**, whatever caused it. This runs in front of someone
+        thirty seconds into trying EOS for the first time, and a stack trace is never the
+        right answer — so please report one even if you think you did something odd.
+
+        **Do not paste a publish key** (`eospk_…`), a connection token (`eostk_…`), or the
+        contents of `eos-project.json`. Redact them. The CLI redacts them in its own output;
+        please do the same here.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you ran, and what it did.
+      placeholder: |
+        $ eos connect
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Full output
+      description: >
+        The whole thing, not just the last line. If the CLI printed a message that was not
+        actionable, that message is itself part of the bug.
+      render: shell
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: How you installed it
+      options:
+        - Downloaded binary
+        - pip install from a clone
+        - Other (say so below)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "`eos --help` header, or the release you downloaded. Python version if you installed from source."
+      placeholder: "0.1.0, Python 3.12, Windows 11"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: repository
+    attributes:
+      label: What the repository looked like
+      description: >
+        These are the distinctions that most often matter — several past bugs were only
+        reachable in one of these states.
+      options:
+        - label: It had been connected to EOS before
+        - label: It already had a `docs/` directory
+        - label: It already had `.engos/`
+        - label: It had no commits yet
+        - label: It has a file or directory named `app.py` / `app/` at the root
+        - label: The publishing branch is not the default branch
+
+  - type: textarea
+    id: anything-else
+    attributes:
+      label: Anything else
+      description: Whatever did not fit above.

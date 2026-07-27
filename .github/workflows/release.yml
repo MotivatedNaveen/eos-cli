@@ -1,0 +1,132 @@
+# Build the `eos` binary for every platform a developer might be on, and attach it to a
+# release when one is tagged.
+#
+# Two triggers, deliberately different:
+#
+#   push / pull_request  → build and smoke-test. Proves the three platforms still compile and
+#                          run. Artifacts expire; nothing is published.
+#   tag `v*`             → the same build, attached to a GitHub Release with checksums.
+#
+# A binary is not cross-compiled: each one is built on the operating system it targets.
+
+name: Build and release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false          # one platform failing must not hide the others' results
+      matrix:
+        include:
+          - os: ubuntu-latest
+            asset: eos-linux-x64
+          - os: macos-latest
+            asset: eos-macos-arm64
+          - os: windows-latest
+            asset: eos-windows-x64.exe
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The CLI's own dependencies and nothing else. If this ever needs more, the packaging
+      # boundary has been broken and the build should be what notices.
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . pyinstaller
+
+      # The property that makes the CLI shippable at all: one third-party dependency, and no
+      # import of anything that would drag a web framework into a command-line tool. Checked
+      # before the slow part.
+      - name: Check the import graph
+        shell: bash
+        run: |
+          python - <<'PY'
+          import sys
+          for name in ("pydantic", "fastapi", "sqlalchemy", "alembic", "starlette"):
+              sys.modules[name] = None      # any import of these now fails loudly
+          import eos_cli.cli                # noqa: F401
+          print("import graph is clean")
+          PY
+
+      - name: Build
+        run: pyinstaller --clean --noconfirm eos.spec
+
+      # A binary that cannot run is not a build success. `--help` exercises argument parsing
+      # and, through it, that every module imported inside the bundle.
+      - name: Smoke test
+        shell: bash
+        run: |
+          BIN=dist/eos
+          [ -f "$BIN.exe" ] && BIN="$BIN.exe"
+          "$BIN" --help
+          "$BIN" connect --help
+          "$BIN" publish --help
+
+      - name: Name and checksum
+        shell: bash
+        run: |
+          cd dist
+          SRC=eos
+          [ -f eos.exe ] && SRC=eos.exe
+          mv "$SRC" "${{ matrix.asset }}"
+          shasum -a 256 "${{ matrix.asset }}" | tee "${{ matrix.asset }}.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: |
+            dist/${{ matrix.asset }}
+            dist/${{ matrix.asset }}.sha256
+          if-no-files-found: error
+
+  release:
+    # Only on a tag. A push to main builds and proves; it does not publish.
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write           # narrowest scope that can create a release
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Collect
+        run: |
+          mkdir -p release
+          find artifacts -type f -exec mv {} release/ \;
+          ls -l release
+          cat release/*.sha256 > release/SHA256SUMS
+          cat release/SHA256SUMS
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
+          body: |
+            Single-file executables. No runtime to install.
+
+            Verify what you downloaded before running it:
+
+            ```sh
+            shasum -a 256 -c SHA256SUMS --ignore-missing
+            ```
+
+            Then put it on your `PATH` and run `eos connect` in a repository. See the
+            [getting started guide](https://github.com/MotivatedNaveen/eos-cli/blob/main/docs/getting-started.md).

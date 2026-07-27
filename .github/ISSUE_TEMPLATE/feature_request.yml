@@ -1,0 +1,57 @@
+name: Feature request
+description: Something the CLI should do and does not
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Some things are deliberately absent rather than missing. Worth checking against
+        [what it will not do](https://github.com/MotivatedNaveen/eos-cli#what-it-will-not-do)
+        before writing — creating projects, reading source code, and rewriting what you
+        authored are all decisions rather than gaps.
+
+        That does not make them unarguable. If you think one is wrong, say why here; a
+        deliberate decision challenged with a real use case is a good issue.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you were trying to do
+      description: >
+        The situation, not the feature. What were you doing when you wanted this? The best
+        solution is often not the one that first came to mind, and the problem is the part
+        only you can supply.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you think should happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried or ruled out
+      description: Including workarounds that nearly worked, and why they did not.
+
+  - type: dropdown
+    id: assistant
+    attributes:
+      label: Which AI assistant you work with
+      description: >
+        EOS exists to give an assistant memory across sessions, so this shapes what a feature
+        is worth. "None" is a valid answer and useful to know.
+      options:
+        - Claude Code
+        - Codex
+        - Cursor
+        - Gemini CLI
+        - GitHub Copilot
+        - Several
+        - None
+        - Other
+    validations:
+      required: true

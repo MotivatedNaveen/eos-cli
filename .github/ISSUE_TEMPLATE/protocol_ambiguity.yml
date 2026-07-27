@@ -1,0 +1,51 @@
+name: Protocol ambiguity
+description: The publish protocol specification was unclear, incomplete, or contradicted by this client
+labels: ["protocol", "documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        `docs/protocol.md` is meant to be sufficient on its own: a minimal client
+        implementable from it alone, without reading any EOS code, interoperating with the
+        same deployment as this one.
+
+        **If you had to guess, or had to read `eos_cli/` to work something out, the
+        specification is wrong — not you.** This is the most valuable kind of issue this
+        repository can receive, because the failure mode of a specification is that the code
+        quietly becomes the real answer.
+
+  - type: input
+    id: section
+    attributes:
+      label: Which section
+      placeholder: "§6.2 Paths"
+    validations:
+      required: true
+
+  - type: textarea
+    id: ambiguity
+    attributes:
+      label: What was unclear
+      description: What the text says, and what it could reasonably be read to mean.
+    validations:
+      required: true
+
+  - type: textarea
+    id: guess
+    attributes:
+      label: What you did instead
+      description: >
+        What you implemented in the absence of an answer, and whether it turned out to be
+        right.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem this is
+      options:
+        - Ambiguous — two readings, both defensible
+        - Missing — needed something the specification does not mention
+        - Contradicted — this client does something the specification does not say
+        - Wrong — the specification states something untrue
+    validations:
+      required: true

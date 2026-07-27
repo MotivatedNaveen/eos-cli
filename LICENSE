@@ -1,0 +1,24 @@
+LICENSE — NOT YET CHOSEN
+========================
+
+The licence for the EOS CLI has not been decided yet. This file is a placeholder and is
+not a grant of rights.
+
+Until a licence is published here, the default applies: copyright is retained and no
+permission is given to use, copy, modify or distribute this software. The source is
+visible so that the publish protocol has a readable reference implementation, and so that
+anyone can verify what the tool does with their repository — which are the two things that
+matter most before you run something over your own code.
+
+**Practically, this means:**
+
+- Read it, audit it, and run it against your own repositories: that is what it is here for.
+- Do not vendor it, fork it into a product, or redistribute it until a licence exists.
+- If you need certainty before depending on this, open an issue and say so. A licence
+  question from a real user is the fastest way to get one chosen.
+
+A placeholder is uncomfortable and it is more honest than picking a licence badly. Choosing
+one is easy to do and hard to undo — an open-source licence, once published, cannot be
+withdrawn from the versions that carried it.
+
+Copyright (c) 2026 Engineering OS. All rights reserved.
